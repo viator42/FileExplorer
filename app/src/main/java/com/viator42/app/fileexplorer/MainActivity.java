@@ -40,13 +40,15 @@ public class MainActivity extends AppCompatActivity {
 
         homePath = Environment.getExternalStorageDirectory().getPath();
 
-        toolbar.setNavigationIcon(R.drawable.ic_keyboard_backspace_white_24dp);
+        toolbar.setNavigationIcon(R.drawable.arrow_left);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
+
+        load(homePath);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -70,12 +72,6 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        load(homePath);
-    }
-
     public void load(String path) {
         currentFile = new File(path);
         File[] files = currentFile.listFiles();
@@ -93,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(file.isFile()) {
                     line.put("type", StaticValues.FILE_ITEM_TYPE_FILE);
+                    line.put("sub", getFileType(file.getName()));
                 }
 
                 fileListData.add(line);
@@ -100,12 +97,6 @@ public class MainActivity extends AppCompatActivity {
             }
             fileItemAdapter = new FileItemAdapter(fileListData, MainActivity.this);
             fileListView.setAdapter(fileItemAdapter);
-            fileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                }
-            });
         }
 
     }
@@ -136,11 +127,21 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
 //        super.onBackPressed();
         //返回键
-        Toast.makeText(MainActivity.this, "onBackPressed", Toast.LENGTH_SHORT).show();
-
         if(!currentFile.getPath().equals(homePath) && currentFile.isDirectory()) {
             load(currentFile.getParent());
         }
 
     }
+
+    /**
+     * 获取文件后缀名
+     * @param fileName
+     * @return
+     */
+    public String getFileType(String fileName) {
+        String[] strArray = fileName.split("\\.");
+        int suffixIndex = strArray.length -1;
+        return strArray[suffixIndex];
+    }
+
 }
