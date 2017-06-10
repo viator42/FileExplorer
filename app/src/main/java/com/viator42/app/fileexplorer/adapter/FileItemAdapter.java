@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import com.viator42.app.fileexplorer.MainActivity;
 import com.viator42.app.fileexplorer.R;
 import com.viator42.app.fileexplorer.activity.ImgPreviewActivity;
 import com.viator42.app.fileexplorer.activity.TextPreviewActivity;
+import com.viator42.app.fileexplorer.utils.CommonUtils;
 import com.viator42.app.fileexplorer.utils.StaticValues;
 
 import java.io.File;
@@ -68,6 +70,7 @@ public class FileItemAdapter extends BaseAdapter{
             convertView =inflater.inflate(R.layout.file_item, null);
             holder.name = (TextView)convertView.findViewById(R.id.name);
             holder.path = (TextView)convertView.findViewById(R.id.path);
+            holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 
             //为view设置标签
             convertView.setTag(holder);
@@ -77,6 +80,35 @@ public class FileItemAdapter extends BaseAdapter{
 
         holder.name.setText(list.get(position).get("name").toString());
         holder.path.setText(list.get(position).get("path").toString());
+
+        switch ((int) list.get(position).get("type")) {
+            case StaticValues.FILE_ITEM_TYPE_DIRECTORY:
+                holder.icon.setImageResource(R.drawable.ic_file_type_folder);
+                break;
+            case StaticValues.FILE_ITEM_TYPE_FILE:
+                switch (list.get(position).get("sub").toString()) {
+                    case "jpg":
+                        try {
+                            holder.icon.setImageBitmap(
+                                    CommonUtils.loadBitmap(mainActivity, list.get(position).get("path").toString()));
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                            holder.icon.setImageResource(R.drawable.ic_file_type_others);
+                        }
+                        break;
+                    case "txt":
+                        holder.icon.setImageResource(R.drawable.ic_file_type_txt);
+                        break;
+                    case "apk":
+                        holder.icon.setImageResource(R.drawable.ic_file_type_apk);
+                        break;
+                    default:
+                        holder.icon.setImageResource(R.drawable.ic_file_type_others);
+                        break;
+                }
+                break;
+
+        }
 
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +143,6 @@ public class FileItemAdapter extends BaseAdapter{
 
                                 break;
                             case "apk":
-                                Toast.makeText(mainActivity, "this is a txt file", Toast.LENGTH_SHORT).show();
-
                                 try {
                                     intent = new Intent(Intent.ACTION_VIEW);
                                     Uri uri = Uri.fromFile(new File(list.get(position).get("path").toString()));
@@ -145,6 +175,7 @@ public class FileItemAdapter extends BaseAdapter{
     }
 
     static class ViewHolder {
+        ImageView icon;
         TextView name;
         TextView path;
     }
