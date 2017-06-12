@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">FileExplorer</string>
-    <string name="action_settings">Settings</string>
+    <string name="view_mode_list">列表</string>
+    <string name="view_mode_grid">网格</string>
     <string name="file_open_failed">文件打开失败</string>
 
 

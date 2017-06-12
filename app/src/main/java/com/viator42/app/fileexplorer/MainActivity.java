@@ -7,11 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.viator42.app.fileexplorer.adapter.FileItemAdapter;
+import com.viator42.app.fileexplorer.adapter.FileListAdapter;
 import com.viator42.app.fileexplorer.utils.StaticValues;
 
 import java.io.File;
@@ -22,11 +22,13 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public ListView fileListView;
-    public FileItemAdapter fileItemAdapter;
+    public GridView fileGridView;
+    public FileListAdapter fileListAdapter;
     public Toolbar toolbar;
     private List fileListData;
     private File currentFile;
     private String homePath;
+    private int currentListMode = StaticValues.MODE_LIST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fileListView = (ListView) findViewById(R.id.file_list);
+        fileGridView = (GridView) findViewById(R.id.file_grid);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -95,10 +98,32 @@ public class MainActivity extends AppCompatActivity {
                 fileListData.add(line);
 
             }
-            fileItemAdapter = new FileItemAdapter(fileListData, MainActivity.this);
-            fileListView.setAdapter(fileItemAdapter);
+
+            changeListMode();
         }
 
+    }
+
+    public void changeListMode() {
+        switch (currentListMode) {
+            case StaticValues.MODE_LIST:
+                fileListView.setVisibility(View.VISIBLE);
+                fileGridView.setVisibility(View.GONE);
+
+                fileListAdapter = new FileListAdapter(fileListData, MainActivity.this, currentListMode);
+                fileListView.setAdapter(fileListAdapter);
+
+                break;
+
+            case StaticValues.MODE_GRID:
+                fileGridView.setVisibility(View.VISIBLE);
+                fileListView.setVisibility(View.GONE);
+
+                fileListAdapter = new FileListAdapter(fileListData, MainActivity.this, currentListMode);
+                fileGridView.setAdapter(fileListAdapter);
+
+                break;
+        }
     }
 
     @Override
@@ -115,9 +140,16 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.view_mode_list:
+                currentListMode = StaticValues.MODE_LIST;
+                load(homePath);
+                break;
+            case R.id.view_mode_grid:
+                currentListMode = StaticValues.MODE_GRID;
+                load(homePath);
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);
