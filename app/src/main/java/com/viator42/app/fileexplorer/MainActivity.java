@@ -34,12 +34,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fileListView = (ListView) findViewById(R.id.file_list);
         fileGridView = (GridView) findViewById(R.id.file_grid);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         homePath = Environment.getExternalStorageDirectory().getPath();
 
@@ -77,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void load(String path) {
         currentFile = new File(path);
+        toolbar.setSubtitle(path);
         File[] files = currentFile.listFiles();
 
         if(files != null) {
