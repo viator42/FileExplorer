@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viator42.app.fileexplorer.adapter.FileListAdapter;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private File currentFile;
     private String homePath;
     private int currentListMode = StaticValues.MODE_LIST;
+    private TextView msgTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         fileListView = (ListView) findViewById(R.id.file_list);
         fileGridView = (GridView) findViewById(R.id.file_grid);
-
+        msgTextView = (TextView) findViewById(R.id.msg);
         homePath = Environment.getExternalStorageDirectory().getPath();
 
-        toolbar.setNavigationIcon(R.drawable.arrow_left);
+        toolbar.setNavigationIcon(R.mipmap.ic_arrow_left_white_36dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +79,14 @@ public class MainActivity extends AppCompatActivity {
         currentFile = new File(path);
         toolbar.setSubtitle(path);
         File[] files = currentFile.listFiles();
+
+        if(files.length > 0) {
+            msgTextView.setVisibility(View.GONE);
+        }
+        else {
+            msgTextView.setVisibility(View.VISIBLE);
+            msgTextView.setText(getResources().getString(R.string.folder_empty));
+        }
 
         if(files != null) {
             fileListData = new ArrayList<Map<String,Object>>();

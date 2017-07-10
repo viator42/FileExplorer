@@ -3,6 +3,6 @@
     <string name="view_mode_list">列表</string>
     <string name="view_mode_grid">网格</string>
     <string name="file_open_failed">文件打开失败</string>
-
+    <string name="folder_empty">该目录下没有文件</string>
 
 </resources>
